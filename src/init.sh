@@ -8,7 +8,7 @@ MODE_KEYS="$(tmux show-option -gwq mode-keys)"
 TABLE="copy-mode-vi"
 [ "$MODE_KEYS" = "emacs" ] && TABLE="copy-mode"
 
-# Process bindings and rebind scroll commands
+# Find keys bound to scroll commands and rebind
 tmux list-keys -T "$TABLE" | while IFS= read -r line; do
     case "$line" in
         *send-keys*scroll-up)       params="up normal" ;;
