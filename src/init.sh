@@ -8,25 +8,18 @@ MODE_KEYS="$(tmux show-option -gwq mode-keys)"
 TABLE="copy-mode-vi"
 [ "$MODE_KEYS" = "emacs" ] && TABLE="copy-mode"
 
-# Map tmux scroll commands to scroll types
-declare -A SCROLL_MAP=(
-    ["scroll-up"]="up normal"
-    ["scroll-down"]="down normal"
-    ["halfpage-up"]="up halfpage"
-    ["halfpage-down"]="down halfpage"
-    ["page-up"]="up fullpage"
-    ["page-down"]="down fullpage"
-)
-
-# Capture existing bindings
-mapfile -t bindings < <(tmux list-keys -T "$TABLE")
-
-# Find keys bound to scroll commands and rebind
-for line in "${bindings[@]}"; do
-    for cmd in "${!SCROLL_MAP[@]}"; do
-        if [[ "$line" =~ send-keys.*[[:space:]]$cmd$ ]]; then
-            key=$(echo "$line" | awk '{print $4}')
-            [ -n "$key" ] && tmux bind-key -T "$TABLE" "$key" run-shell -b "$SCROLL_SCRIPT ${SCROLL_MAP[$cmd]}"
-        fi
-    done
+# Process bindings and rebind scroll commands
+tmux list-keys -T "$TABLE" | while IFS= read -r line; do
+    case "$line" in
+        *send-keys*scroll-up)       params="up normal" ;;
+        *send-keys*scroll-down)     params="down normal" ;;
+        *send-keys*halfpage-up)     params="up halfpage" ;;
+        *send-keys*halfpage-down)   params="down halfpage" ;;
+        *send-keys*page-up)         params="up fullpage" ;;
+        *send-keys*page-down)       params="down fullpage" ;;
+        *) continue ;;
+    esac
+    
+    key=$(echo "$line" | awk '{print $4}')
+    [ -n "$key" ] && tmux bind-key -T "$TABLE" "$key" run-shell -b "$SCROLL_SCRIPT $params"
 done
