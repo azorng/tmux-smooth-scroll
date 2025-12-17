@@ -47,14 +47,17 @@ Optional settings in `~/.tmux.conf`:
 
 ```tmux
 # Speed: 0-1000 | lower = faster
-set -g @smooth-scroll-speed "50"
+set -g @smooth-scroll-speed "100"
+
+# Easing mode: linear|sine|quad
+set -g @smooth-scroll-easing "sine"
 
 # Scroll line distance
 set -g @smooth-scroll-normal "3"
 set -g @smooth-scroll-halfpage ""  # Default: pane_height / 2
 set -g @smooth-scroll-fullpage ""  # Default: pane_height
 
-# Mouse wheel smooth scrolling
+# Enable on mouse wheel scroll
 set -g @smooth-scroll-mouse "true"
 ```
 
