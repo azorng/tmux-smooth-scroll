@@ -31,10 +31,5 @@ esac
 # Base delay per line: 0-100 maps to 1000µs - 10000µs linearly
 BASE_DELAY=$((1000 + $(config__speed) * 90))
 
-# For small scrolls (≤ 5 lines), multiply delay to keep animation visible
-if [ "$LINES" -le 5 ] && [ "$LINES" -gt 0 ]; then
-    BASE_DELAY=$((BASE_DELAY * 5))
-fi
-
 # Delegate to pure animator
-exec "$SRC_DIR/animate.sh" "$DIRECTION" "$LINES" "$BASE_DELAY"
+exec "$SRC_DIR/animate.sh" "$DIRECTION" "$LINES" "$BASE_DELAY" "$(config__easing_mode)"

@@ -6,7 +6,7 @@ SRC_DIR="$(dirname "$0")"
 # Speed: 0-1000 scale (lower = faster)
 config__speed() {
     local speed="$(tmux show-option -gqv "@smooth-scroll-speed")"
-    echo "${speed:-50}"
+    echo "${speed:-100}"
 }
 
 # Scroll distances
@@ -31,4 +31,10 @@ config__fullpage_lines() {
 config__mouse_scroll() {
     local mouse="$(tmux show-option -gqv "@smooth-scroll-mouse")"
     echo "${mouse:-true}"
+}
+
+# Easing mode: linear, sine, quad
+config__easing_mode() {
+    local mode="$(tmux show-option -gqv "@smooth-scroll-easing")"
+    echo "${mode:-sine}"
 }
