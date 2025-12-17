@@ -53,5 +53,8 @@ set -g @smooth-scroll-speed "50"
 set -g @smooth-scroll-normal "3"
 set -g @smooth-scroll-halfpage ""  # Default: pane_height / 2
 set -g @smooth-scroll-fullpage ""  # Default: pane_height
+
+# Mouse wheel smooth scrolling
+set -g @smooth-scroll-mouse "true"
 ```
 

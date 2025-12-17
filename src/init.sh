@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Tmux smooth-scroll plugin initialization
-
-PLUGIN_DIR="$( cd "$( dirname "$0" )/.." && pwd )"
-SCROLL_SCRIPT="$PLUGIN_DIR/src/scroll.sh"
+source "$(dirname "$0")/config.sh"
 
 MODE_KEYS="$(tmux show-option -gwq mode-keys)"
 TABLE="copy-mode-vi"
@@ -10,6 +8,13 @@ TABLE="copy-mode-vi"
 
 # Find keys bound to scroll commands and rebind
 tmux list-keys -T "$TABLE" | while IFS= read -r line; do
+    # Skip mouse wheel events if explicitly disabled
+    if [ "$(config__mouse_scroll)" = "false" ]; then
+        case "$line" in
+            *Wheel*) continue ;;
+        esac
+    fi
+    
     case "$line" in
         *send-keys*scroll-up)       params="up normal" ;;
         *send-keys*scroll-down)     params="down normal" ;;
@@ -21,5 +26,5 @@ tmux list-keys -T "$TABLE" | while IFS= read -r line; do
     esac
     
     key=$(echo "$line" | awk '{print $4}')
-    [ -n "$key" ] && tmux bind-key -T "$TABLE" "$key" run-shell -b "$SCROLL_SCRIPT $params"
+    [ -n "$key" ] && tmux bind-key -T "$TABLE" "$key" run-shell -b "$SRC_DIR/scroll.sh $params"
 done
