@@ -15,22 +15,21 @@ sub linear {
 
 sub sine {
     my $t = shift;  # progress 0.0 to 1.0
-    # Smooth sine curve - gradual start/end
-    # sin wave: 0 -> 1 -> 0, normalized to velocity range 0.5 -> 2.0
+    # Sine curve: slower at edges, faster in middle (0.3x -> 3x range)
     my $velocity = sin($t * PI);
-    return 0.5 + $velocity * 1.5;
+    return 0.3 + $velocity * 2.7;
 }
 
 sub quad {
     my $t = shift;  # progress 0.0 to 1.0
-    # Quadratic ease in-out
+    # Quadratic ease in-out: slow start/end, aggressive middle (0.2x -> 3x range)
     my $velocity;
     if ($t < 0.5) {
         $velocity = 2 * $t * $t;
     } else {
         $velocity = 1.0 - ((-2 * $t + 2) ** 2) / 2;
     }
-    return 0.5 + $velocity * 1.5;
+    return 0.2 + $velocity * 2.8;
 }
 
 # Calculate delay for each step (inverse of velocity)

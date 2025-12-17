@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pure animation executor
-# Input: direction (up|down), lines (int), base_delay_us (int microseconds), easing_mode (linear|sine|expo)
+# Input: direction (up|down), lines (int), base_delay_us (int microseconds), easing_mode (linear|sine|quad)
 # Output: executes smooth scroll animation
 
 DIRECTION=$1
