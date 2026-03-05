@@ -59,5 +59,8 @@ set -g @smooth-scroll-fullpage ""  # Default: pane_height
 
 # Enable on mouse wheel scroll
 set -g @smooth-scroll-mouse "true"
+
+# Auto-exit copy mode when scrolling past the bottom
+set -g @smooth-scroll-exit-copy-mode-at-bottom "true"
 ```
 

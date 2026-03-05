@@ -38,3 +38,9 @@ config__easing_mode() {
     local mode="$(tmux show-option -gqv "@smooth-scroll-easing")"
     echo "${mode:-sine}"
 }
+
+# Auto-exit copy mode when scrolling past bottom (default: true)
+config__exit_copy_mode_at_bottom() {
+    local val="$(tmux show-option -gqv "@smooth-scroll-exit-copy-mode-at-bottom")"
+    echo "${val:-true}"
+}

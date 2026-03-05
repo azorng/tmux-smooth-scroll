@@ -32,4 +32,9 @@ esac
 BASE_DELAY=$((1000 + $(config__speed) * 90))
 
 # Delegate to pure animator
-exec "$SRC_DIR/animate.sh" "$DIRECTION" "$LINES" "$BASE_DELAY" "$(config__easing_mode)"
+"$SRC_DIR/animate.sh" "$DIRECTION" "$LINES" "$BASE_DELAY" "$(config__easing_mode)"
+
+# After scrolling down, exit copy mode if we've reached the bottom
+if [ "$DIRECTION" = "down" ] && [ "$(config__exit_copy_mode_at_bottom)" = "true" ]; then
+    tmux if-shell -F "#{&&:#{pane_in_mode},#{==:#{scroll_position},0}}" "send-keys -X cancel"
+fi
