@@ -59,12 +59,13 @@ sub get_delay {
 }
 
 # Execute animation
+my @cmd = ("tmux", "send-keys");
+push @cmd, "-t", $target_pane if defined $target_pane && length $target_pane;
+push @cmd, "-X", "scroll-" . $direction;
+
 for (my $i = 0; $i < $lines; $i++) {
-    my @cmd = ("tmux", "send-keys");
-    push @cmd, "-t", $target_pane if defined $target_pane && length $target_pane;
-    push @cmd, "-X", "scroll-" . $direction;
     system(@cmd);
-    
+
     # Don't delay after last scroll
     if ($i < $lines - 1) {
         my $delay = get_delay($i, $lines, $mode);
