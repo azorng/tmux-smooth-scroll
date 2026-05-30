@@ -7,8 +7,14 @@ source "$(dirname "$0")/config.sh"
 DIRECTION=$1
 SCROLL_TYPE=$2
 
+# Target pane: where the binding fired (mouse pane for wheel events, active
+# pane for keyboard). tmux exports TMUX_PANE for run-shell -b bindings.
+TARGET_PANE="${TMUX_PANE:-}"
+TARGET_ARG=()
+[ -n "$TARGET_PANE" ] && TARGET_ARG=(-t "$TARGET_PANE")
+
 # Calculate scroll distance based on pane height
-PANE_HEIGHT=$(tmux display-message -p '#{pane_height}')
+PANE_HEIGHT=$(tmux display-message "${TARGET_ARG[@]}" -p '#{pane_height}')
 
 case "$SCROLL_TYPE" in
     halfpage)
@@ -32,9 +38,10 @@ esac
 BASE_DELAY=$((1000 + $(config__speed) * 90))
 
 # Delegate to pure animator
-"$SRC_DIR/animate.sh" "$DIRECTION" "$LINES" "$BASE_DELAY" "$(config__easing_mode)"
+"$SRC_DIR/animate.sh" "$DIRECTION" "$LINES" "$BASE_DELAY" "$(config__easing_mode)" "$TARGET_PANE"
 
 # After scrolling down, exit copy mode if we've reached the bottom
 if [ "$DIRECTION" = "down" ] && [ "$(config__exit_copy_mode_at_bottom)" = "true" ]; then
-    tmux if-shell -F "#{&&:#{pane_in_mode},#{==:#{scroll_position},0}}" "send-keys -X cancel"
+    tmux if-shell "${TARGET_ARG[@]}" -F "#{&&:#{pane_in_mode},#{==:#{scroll_position},0}}" \
+        "send-keys ${TARGET_PANE:+-t $TARGET_PANE} -X cancel"
 fi
