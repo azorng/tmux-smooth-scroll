@@ -43,5 +43,7 @@ BASE_DELAY=$((1000 + $(config__speed) * 90))
 # After scrolling down, exit copy mode if we've reached the bottom
 if [ "$DIRECTION" = "down" ] && [ "$(config__exit_copy_mode_at_bottom)" = "true" ]; then
     AT_BOTTOM=$(tmux display-message "${TARGET_ARG[@]}" -p '#{&&:#{pane_in_mode},#{==:#{scroll_position},0}}')
-    [ "$AT_BOTTOM" = "1" ] && tmux send-keys "${TARGET_ARG[@]}" -X cancel
+    if [ "$AT_BOTTOM" = "1" ]; then
+        tmux send-keys "${TARGET_ARG[@]}" -X cancel
+    fi
 fi
