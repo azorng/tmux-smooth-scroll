@@ -6,7 +6,7 @@ use Time::HiRes qw(usleep);
 use POSIX qw(ceil);
 use constant PI => 3.14159265359;
 
-my ($base_delay, $lines, $direction, $mode) = @ARGV;
+my ($base_delay, $lines, $direction, $mode, $target_pane) = @ARGV;
 
 # Easing functions - return velocity factor (higher = faster, lower delay)
 sub linear {
@@ -59,9 +59,13 @@ sub get_delay {
 }
 
 # Execute animation
+my @cmd = ("tmux", "send-keys");
+push @cmd, "-t", $target_pane if defined $target_pane && length $target_pane;
+push @cmd, "-X", "scroll-" . $direction;
+
 for (my $i = 0; $i < $lines; $i++) {
-    system("tmux", "send-keys", "-X", "scroll-" . $direction);
-    
+    system(@cmd);
+
     # Don't delay after last scroll
     if ($i < $lines - 1) {
         my $delay = get_delay($i, $lines, $mode);

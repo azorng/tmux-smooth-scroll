@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Pure animation executor
-# Input: direction (up|down), lines (int), base_delay_us (int microseconds), easing_mode (linear|sine|quad)
+# Input: direction (up|down), lines (int), base_delay_us (int microseconds), easing_mode (linear|sine|quad), target_pane (optional)
 # Output: executes smooth scroll animation
 
 DIRECTION=$1
 LINES=$2
 BASE_DELAY_US=$3
 EASING_MODE=${4}
+TARGET_PANE=${5:-}
 
 # Validate inputs
 [[ ! "$DIRECTION" =~ ^(up|down)$ ]] && exit 1
@@ -16,4 +17,4 @@ EASING_MODE=${4}
 
 # Execute animation with easing
 SRC_DIR="$(dirname "$0")"
-exec perl "$SRC_DIR/animator.pl" "$BASE_DELAY_US" "$LINES" "$DIRECTION" "$EASING_MODE"
+exec perl "$SRC_DIR/animator.pl" "$BASE_DELAY_US" "$LINES" "$DIRECTION" "$EASING_MODE" "$TARGET_PANE"
