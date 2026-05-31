@@ -16,15 +16,25 @@ tmux list-keys -T "$TABLE" | while IFS= read -r line; do
     fi
     
     case "$line" in
-        *send-keys*scroll-up)       params="up normal" ;;
-        *send-keys*scroll-down)     params="down normal" ;;
-        *send-keys*halfpage-up)     params="up halfpage" ;;
-        *send-keys*halfpage-down)   params="down halfpage" ;;
-        *send-keys*page-up)         params="up fullpage" ;;
-        *send-keys*page-down)       params="down fullpage" ;;
+        *send-keys*scroll-up|*scroll.sh*up*normal*)         params="up normal" ;;
+        *send-keys*scroll-down|*scroll.sh*down*normal*)     params="down normal" ;;
+        *send-keys*halfpage-up|*scroll.sh*up*halfpage*)     params="up halfpage" ;;
+        *send-keys*halfpage-down|*scroll.sh*down*halfpage*) params="down halfpage" ;;
+        *send-keys*page-up|*scroll.sh*up*fullpage*)         params="up fullpage" ;;
+        *send-keys*page-down|*scroll.sh*down*fullpage*)     params="down fullpage" ;;
         *) continue ;;
     esac
     
     key=$(echo "$line" | awk '{print $4}')
-    [ -n "$key" ] && tmux bind-key -T "$TABLE" "$key" run-shell -b "$SRC_DIR/scroll.sh $params"
+    [ -z "$key" ] && continue
+
+    case "$key" in
+        Wheel*Pane)
+            # Wheel bindings need the mouse pane passed into scroll.sh.
+            tmux bind-key -T "$TABLE" "$key" run-shell -b -t = "TMUX_PANE=#{pane_id} $SRC_DIR/scroll.sh $params"
+            ;;
+        *)
+            tmux bind-key -T "$TABLE" "$key" run-shell -b "$SRC_DIR/scroll.sh $params"
+            ;;
+    esac
 done
